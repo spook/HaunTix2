@@ -1,0 +1,54 @@
+#!/usr/bin/perl -w
+use strict;
+use warnings;
+
+use Gtk2 '-init';
+use Glib qw/TRUE FALSE/;
+
+# Main Window
+my $mw = Gtk2::Window->new;
+$mw->set_border_width(13);
+$mw->set_size_request(700,300);
+$mw->set_title('HaunTix: Ticket System');
+$mw->signal_connect(destroy => sub {Gtk2->main_quit;});
+
+# Basic layout grid
+#
+#     ======================
+#     User |  Banner | Status
+#     ----------------------
+#                   |
+#         Items     | Tally
+#                   |
+#     ----------------------
+#        Function Buttons
+#     ======================
+#
+my $grid = new Gtk2::Table(3, 3, FALSE);
+my %frame = ();
+foreach my $what (qw/User Head Stat Items Tally Func/) {
+    $frame{lc $what} = new Gtk2::Frame($what);
+}
+$grid->attach_defaults($frame{'user'}, 0, 1, 0, 1);
+$grid->attach_defaults($frame{'head'}, 1, 2, 0, 1);
+$grid->attach_defaults($frame{'stat'}, 2, 3, 0, 1);
+$grid->attach_defaults($frame{'items'}, 0, 2, 1, 2);
+$grid->attach_defaults($frame{'tally'}, 2, 3, 1, 2);
+$grid->attach_defaults($frame{'func'}, 0, 3, 2, 3);
+$mw->add($grid);
+
+# Temporary so we can quit the GUI
+my $quit_button = Gtk2::Button->new('_Quit');
+$quit_button->signal_connect(
+    clicked => sub {
+        Gtk2->main_quit;
+    }
+);
+#$frame{'func'}->add($quit_button, FALSE, FALSE, 0);
+
+
+$mw->show_all;
+Gtk2->main;
+
+exit 0;
+
